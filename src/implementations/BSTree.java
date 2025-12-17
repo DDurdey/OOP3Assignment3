@@ -1,7 +1,6 @@
 package implementations;
 
 import java.io.Serializable;
-import java.util.NoSuchElementException;
 
 import utilities.BSTreeADT;
 import utilities.Iterator;
@@ -163,7 +162,7 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 		return node;
 	}
 
-	@Override
+	@Override  
 	public Iterator<E> inorderIterator() {
 		return new BSTInorderIterator<>(root);
 	}
@@ -180,7 +179,7 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 }
 
 // Inorder Iterator -- Left, Root, Right
-private class BSTInorderIterator<E> implements utilities.Iterator<E> {
+class BSTInorderIterator<E> implements utilities.Iterator<E> {
 		private java.util.Stack<BSTreeNode<E>> stack;
 		
 		public BSTInorderIterator(BSTreeNode<E> root) {
@@ -214,7 +213,7 @@ private class BSTInorderIterator<E> implements utilities.Iterator<E> {
 }
 
 // Preorder iterator -- Root, Left, Right
-private class BSTPreorderIterator<E> implements utilities.Iterator<E> {
+class BSTPreorderIterator<E> implements utilities.Iterator<E> {
 	private java.util.Stack<BSTreeNode<E>> stack;
 
 	public BSTPreorderIterator(BSTreeNode<E> root) {
@@ -230,7 +229,7 @@ private class BSTPreorderIterator<E> implements utilities.Iterator<E> {
 	}
 
 	@Override
-	@SuppressWarnings("Unchecked")
+	@SuppressWarnings("unchecked")
 	public E next() throws java.util.NoSuchElementException {
 		if (!hasNext()) {
 			throw new java.util.NoSuchElementException();
@@ -239,7 +238,7 @@ private class BSTPreorderIterator<E> implements utilities.Iterator<E> {
 		BSTreeNode<E> node = stack.pop();
 
 		if (node.getRight() != null) {
-			stack.push(node.getLEft());
+			stack.push(node.getLeft());
 		}
 
 		return node.getData();
@@ -248,7 +247,7 @@ private class BSTPreorderIterator<E> implements utilities.Iterator<E> {
 
 
 // Postorder Iterator -- Left, Right, Root
-private class BSTPostorderIterator<E> implements utilities.Iterator<E> {
+class BSTPostorderIterator<E> implements utilities.Iterator<E> {
 	private java.util.Stack<BSTreeNode<E>> stack;
 	private BSTreeNode<E> lastVisited;
 
@@ -260,7 +259,7 @@ private class BSTPostorderIterator<E> implements utilities.Iterator<E> {
 
 	private void pushLeft(BSTreeNode<E> node) {
 		while (node != null) {
-			stac.push(node);
+			stack.push(node);
 			node = node.getLeft();
 		}
 	}
@@ -271,7 +270,7 @@ private class BSTPostorderIterator<E> implements utilities.Iterator<E> {
 	}
 
 	@Override
-	@SuppressWarnings("Unchecked")
+	@SuppressWarnings("unchecked")
 	public E next() throws java.util.NoSuchElementException {
 		if (!hasNext()) {
 			throw new java.util.NoSuchElementException();
