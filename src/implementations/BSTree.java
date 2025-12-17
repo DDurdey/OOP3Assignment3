@@ -178,3 +178,70 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Se
 		return new BSTPostorderIterator<>(root);
 	}
 }
+
+// Inorder Iterator -- Left, Root, Right
+private class BSTInorderIterator<E> implements utilities.Iterator<E> {
+		private java.util.Stack<BSTreeNode<E>> stack;
+		
+		public BSTInorderIterator(BSTreeNode<E> root) {
+			stack = new java.util.Stack<>();
+			pushLeft(root);
+		}
+		
+		private void pushLeft(BSTreeNode<E> node) {
+			while (node != null) {
+				stack.push(node);
+				node = node.getLeft();
+			}
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+		
+		@Override
+		@SuppressWarnings("unchecked")
+		public E next() throws java.util.NoSuchElementException {
+			if (!hasNext()) {
+				throw new java.util.NoSuchElementException();
+			}
+			
+			BSTreeNode<E> node = stack.pop();
+			pushLeft(node.getRight());
+			return node.getData();
+		}
+}
+
+// Preorder iterator -- Root, Left, Right
+private class BSTPreorderIterator<E> implements utilities.Iterator<E> {
+	private java.util.Stack<BSTreeNode<E>> stack;
+
+	public BSTPreorderIterator(BSTreeNode<E> root) {
+		stack = new java.util.Stack<>();
+		if (root != null) {
+			stack.push(root);
+		}
+	}
+
+	@Override
+	public boolean hasNext() {
+		return !stack.isEmpty();
+	}
+
+	@Override
+	@SuppressWarnings("Unchecked")
+	public E next() throws java.util.NoSuchElementException {
+		if (!hasNext()) {
+			throw new java.util.NoSuchElementException();
+		}
+
+		BSTreeNode<E> node = stack.pop();
+
+		if (node.getRight() != null) {
+			stack.push(node.getLEft());
+		}
+
+		return node.getData();
+	}
+}
