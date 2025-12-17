@@ -113,6 +113,12 @@ public class WordTracker implements Serializable {
         }
     }
 
+    /**
+     * Loads the serialized repository from disk. If the repository file does
+     * not exist a fresh empty {@code BSTree} is returned.
+     *
+     * @return previously saved tree or a new empty tree
+     */
     @SuppressWarnings("unchecked")
     private static BSTree<WordInfo> loadRepository() throws IOException, ClassNotFoundException {
         File repo = new File(REPO_FILE);
@@ -125,12 +131,27 @@ public class WordTracker implements Serializable {
         }
     }
 
+    /**
+     * Saves the repository tree to disk (serialized) overwriting the previous
+     * repository file.
+     *
+     * @param tree tree to persist
+     */
     private static void saveRepository(BSTree<WordInfo> tree) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(REPO_FILE))) {
             oos.writeObject(tree);
         }
     }
 
+    /**
+     * Reads the given input file line-by-line, tokenizes each line into
+     * lower-cased words (letters only) and records each occurrence into the
+     * provided tree. Non-letter characters are removed so words like
+     * "hello," and "hello" are treated the same.
+     *
+     * @param tree repository tree to update
+     * @param inputPath path to the text file to process
+     */
     private static void processInputFile(BSTree<WordInfo> tree, String inputPath) throws IOException {
         Path path = Paths.get(inputPath);
         String fileName = path.getFileName().toString();
@@ -152,6 +173,15 @@ public class WordTracker implements Serializable {
         }
     }
 
+    /**
+     * Helper to locate an existing WordInfo in the tree, or create and insert
+     * a new one if not found, then record the occurrence (file + line).
+     *
+     * @param tree repository tree
+     * @param word lower-cased word to record
+     * @param fileName source file name
+     * @param lineNumber line number where word was found
+     */
     private static void addWordOccurrence(BSTree<WordInfo> tree, String word, String fileName, int lineNumber) {
         WordInfo probe = new WordInfo(word);
         implementations.BSTreeNode<WordInfo> node = tree.search(probe);
@@ -163,6 +193,14 @@ public class WordTracker implements Serializable {
         }
     }
 
+    /**
+     * Traverses the tree in-order and builds the textual report according to
+     * the selected option (-pf, -pl, -po).
+     *
+     * @param tree repository tree to traverse
+     * @param option output option string
+     * @return formatted report as a string
+     */
     private static String buildReport(BSTree<WordInfo> tree, String option) {
         StringBuilder sb = new StringBuilder();
         utilities.Iterator<WordInfo> it = tree.inorderIterator();
@@ -183,6 +221,15 @@ public class WordTracker implements Serializable {
         return sb.toString();
     }
 
+    /**
+     * Formats a single WordInfo based on the output option. Small helper to
+     * centralize display decisions (capitalization exceptions, file/line
+     * formatting, and frequency counting for -po).
+     *
+     * @param wi word info to format
+     * @param option output option string (-pf, -pl, -po)
+     * @return formatted string for this WordInfo
+     */
     private static String formatWordInfo(WordInfo wi, String option) {
         StringBuilder sb = new StringBuilder();
 
