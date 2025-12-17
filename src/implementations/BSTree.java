@@ -245,3 +245,48 @@ private class BSTPreorderIterator<E> implements utilities.Iterator<E> {
 		return node.getData();
 	}
 }
+
+
+// Postorder Iterator -- Left, Right, Root
+private class BSTPostorderIterator<E> implements utilities.Iterator<E> {
+	private java.util.Stack<BSTreeNode<E>> stack;
+	private BSTreeNode<E> lastVisited;
+
+	public BSTPostorderIterator(BSTreeNode<E> root) {
+		stack = new java.util.Stack<>();
+		lastVisited = null;
+		pushLeft(root);
+	}
+
+	private void pushLeft(BSTreeNode<E> node) {
+		while (node != null) {
+			stac.push(node);
+			node = node.getLeft();
+		}
+	}
+
+	@Override
+	public boolean hasNext() {
+		return !stack.isEmpty();
+	}
+
+	@Override
+	@SuppressWarnings("Unchecked")
+	public E next() throws java.util.NoSuchElementException {
+		if (!hasNext()) {
+			throw new java.util.NoSuchElementException();
+		}
+
+		while (true) {
+			BSTreeNode<E> node = stack.peek();
+
+			if (node.getRight() != null && lastVisited != node.getRight()) {
+				pushLeft(node.getRight());
+			} else {
+				stack.pop();
+				lastVisited = node;
+				return node.getData();
+			}
+		}
+	}
+}
